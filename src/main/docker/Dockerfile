@@ -1,5 +1,10 @@
 FROM java:8
-COPY /home/travis/build/cemurat/service-discovery/target/service-discovery-0.0.1-SNAPSHOT.jar /usr/app/
-WORKDIR /usr/app
-RUN sh -c 'touch service-discovery-0.0.1-SNAPSHOT.jar'
-ENTRYPOINT ["java","-jar","service-discovery-0.0.1-SNAPSHOT.jar"]
+ENV APP_ROOT /app
+RUN mkdir ${APP_ROOT}
+WORKDIR ${APP_ROOT}
+echo 1
+echo ls
+echo 2
+echo dir
+COPY target/*.jar ${APP_ROOT}/run.jar
+ENTRYPOINT ["java", "-jar", "run.jar"]
