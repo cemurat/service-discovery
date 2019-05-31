@@ -1,10 +1,7 @@
-FROM java:8
-ENV APP_ROOT /app
-RUN mkdir ${APP_ROOT}
-WORKDIR ${APP_ROOT}
-echo 1
-echo ls
-echo 2
-echo dir
-COPY target/*.jar ${APP_ROOT}/run.jar
-ENTRYPOINT ["java", "-jar", "run.jar"]
+FROM frolvlad/alpine-oraclejdk8:slim
+VOLUME /tmp
+ADD target/service-discovery-0.0.1-SNAPSHOT.jar app.jar
+RUN sh -c 'touch /app.jar'
+ENV JAVA_OPTS="-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8787,suspend=n"
+EXPOSE 8080 8787
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=docker -jar /app.jar" ]
